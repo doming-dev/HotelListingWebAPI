@@ -58,6 +58,9 @@ namespace HotelListing
                 options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"));
             });
 
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+
             services
                 .AddControllers()
                 .AddNewtonsoftJson(op => 

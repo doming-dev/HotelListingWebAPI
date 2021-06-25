@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HotelListing.Data
 {
-    public class DatabaseContext : IdentityDbContext
+    public class DatabaseContext : IdentityDbContext<ApiUser>
     {
         public DbSet<Hotel> Hotels { get; set; }
         public DbSet<Country> Countries { get; set; }
