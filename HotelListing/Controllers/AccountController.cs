@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HotelListing.Data;
 using HotelListing.Models;
+using HotelListing.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,18 +17,18 @@ namespace HotelListing.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<ApiUser> _userManager;
-        //private readonly SignInManager<ApiUser> _signInManager;
+        private readonly IAuthManager _authManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IMapper _mapper;
 
         public AccountController(
             UserManager<ApiUser> userManager,
-            //SignInManager<ApiUser> signInManager,
+            IAuthManager authManager,
             ILogger<AccountController> logger,
             IMapper mapper)
         {
             _userManager = userManager;
-            //_signInManager = signInManager;
+            _authManager = authManager;
             _logger = logger;
             _mapper = mapper;
         }
@@ -69,32 +70,32 @@ namespace HotelListing.Controllers
             }
         }
 
-        //[HttpPost]
-        //[Route("login")]
-        //public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
-        //{
-        //    _logger.LogInformation($"Login Attempt for {loginUserDTO.Email}");
-        //    if (!ModelState.IsValid) // this is how you validate forms in asp.net core - based on prop attributes
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
+        {
+            _logger.LogInformation($"Login Attempt for {loginUserDTO.Email}");
+            if (!ModelState.IsValid) // this is how you validate forms in asp.net core - based on prop attributes
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    try
-        //    {
-        //        var result = await _signInManager.PasswordSignInAsync(loginUserDTO.Email, loginUserDTO.Password, false, false);
+            try
+            {
+                var result = await _authManager.ValidateUser(loginUserDTO);
 
-        //        if (!result.Succeeded)
-        //        {
-        //            return Unauthorized(loginUserDTO);
-        //        }
+                if (!result)
+                {
+                    return Unauthorized(loginUserDTO);
+                }
 
-        //        return Accepted();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, $"Something went wrong in the {nameof(Register)}");
-        //        return Problem($"Something went wrong in the {nameof(Register)}", statusCode: 500);
-        //    }
-        //}
+                return Accepted(new { Token = await _authManager.CreateToken() });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Something went wrong in the {nameof(Register)}");
+                return Problem($"Something went wrong in the {nameof(Register)}", statusCode: 500);
+            }
+        }
     }
 }

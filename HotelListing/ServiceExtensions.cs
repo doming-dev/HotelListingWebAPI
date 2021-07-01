@@ -39,6 +39,7 @@ namespace HotelListing
                 {
                     o.TokenValidationParameters = new TokenValidationParameters
                     {
+                        ValidateAudience = false,
                         ValidateIssuer = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
