@@ -3,6 +3,7 @@ using HotelListing.Configurations;
 using HotelListing.Data;
 using HotelListing.IRepository;
 using HotelListing.Repository;
+using HotelListing.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -47,6 +48,7 @@ namespace HotelListing
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<IMapper, Mapper>();
+            services.AddScoped<IAuthManager, AuthManager>();
 
             services.AddSwaggerGen(c =>
             {
@@ -60,6 +62,7 @@ namespace HotelListing
 
             services.AddAuthentication();
             services.ConfigureIdentity(); // this is a way to move configuration into separate file - ServiceExtensions.cs
+            services.ConfigureJwt(Configuration);
 
             services
                 .AddControllers()
