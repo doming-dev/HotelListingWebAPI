@@ -59,7 +59,7 @@ namespace HotelListing
             });
 
             services.AddAuthentication();
-            services.ConfigureIdentity();
+            services.ConfigureIdentity(); // this is a way to move configuration into separate file - ServiceExtensions.cs
 
             services
                 .AddControllers()
