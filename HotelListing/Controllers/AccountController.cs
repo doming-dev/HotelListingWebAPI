@@ -75,7 +75,7 @@ namespace HotelListing.Controllers
         public async Task<IActionResult> Login([FromBody] LoginUserDTO loginUserDTO)
         {
             _logger.LogInformation($"Login Attempt for {loginUserDTO.Email}");
-            if (!ModelState.IsValid) // this is how you validate forms in asp.net core - based on prop attributes
+            if (!ModelState.IsValid) // this is how you validate forms in asp.net core - based on prop data annotations / attributes
             {
                 return BadRequest(ModelState);
             }
